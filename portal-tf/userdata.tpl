@@ -4,10 +4,10 @@
 
 # As root install packages
 apt-get update 
-apt-get install python-bottle -y
-apt install virtualenv -y
-apt-get install nginx -y
-apt-get install python-pip -y
+apt-get install python-bottle virtualenv nginx python-pip python3-pip -y
+#apt install virtualenv -y
+#apt-get install nginx -y
+#apt-get install python-pip -y
 
 HOME="/root"
 mkdir $HOME/public
@@ -90,6 +90,8 @@ service nginx restart
 pip install -U bottle
 pip install urllib3
 pip install boto3
+pip3 install urllib3
+pip3 install boto3
 
 # Run flightschool portal as a daemon
 cd $HOME; nohup python $HOME/build.py &

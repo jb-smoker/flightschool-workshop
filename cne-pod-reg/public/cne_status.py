@@ -34,7 +34,7 @@ def get_pod_start(id, dynamodb=None):
         # If code not found, print an error
         return '''Error trying to find FlightSchool session ID'''
     else:
-        print("Found starting_pod_num %s") %start_num
+        #print("Found starting_pod_num %s" %(start_num))
         return(start_num)
 
 def get_pod_end(id, dynamodb=None):
@@ -55,7 +55,7 @@ def get_pod_end(id, dynamodb=None):
         # If code not found, print an error
         return '''Error trying to find FlightSchool session ID'''
     else:
-        print("Found max_pods %s") %max_pods
+        #print("Found max_pods %s" %(max_pods)) 
         return(max_pods)
 
 
@@ -208,7 +208,7 @@ a="""<html><head>
 
 print(a)
 #print("<table><tr><td>Pod ID</td><td>2.1</td><td>2.2</td><td>2.3</td><td>2.4</td><td>2.6</td><td>3.1</td><td>3.2</td><td>3.3</td><td>3.4</td><td>3.6</td></tr>")
-for pod in range(pod_start, pod_end+1):
+for pod in range(int(pod_start), int(pod_end)+1):
     pod_cid = (get_cid(pod))
     lab2_1 = vpc_lab2(pod_cid, pod)
     lab2_2 = transit_gw_lab3(pod_cid, pod)
