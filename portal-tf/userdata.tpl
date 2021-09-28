@@ -18,12 +18,12 @@ echo "aws_access_key_id=${access_key}" >> $HOME/.aws/credentials
 echo "aws_secret_access_key=${secret_key}" >> $HOME/.aws/credentials
 
 # Download flightschool packages
-wget https://raw.githubusercontent.com/fkhademi/flightschool-workshop/main/pod-reg/build.py -P $HOME/
-wget https://raw.githubusercontent.com/fkhademi/flightschool-workshop/main/pod-reg/list.tpl -P $HOME/
-wget https://raw.githubusercontent.com/fkhademi/flightschool-workshop/main/pod-reg/public/index.html -P $HOME/public/
-wget https://raw.githubusercontent.com/fkhademi/flightschool-workshop/main/pod-reg/public/logo.png -P $HOME/public/
-wget https://raw.githubusercontent.com/fkhademi/flightschool-workshop/main/pod-reg/public/new.html -P $HOME/public/
-wget https://raw.githubusercontent.com/fkhademi/flightschool-workshop/main/pod-reg/public/sorttable.js -P $HOME/public/
+wget https://raw.githubusercontent.com/fkhademi/flightschool-workshop/main/cne-pod-reg/build.py -P $HOME/
+wget https://raw.githubusercontent.com/fkhademi/flightschool-workshop/main/cne-pod-reg/list.tpl -P $HOME/
+wget https://raw.githubusercontent.com/fkhademi/flightschool-workshop/main/cne-pod-reg/public/index.html -P $HOME/public/
+wget https://raw.githubusercontent.com/fkhademi/flightschool-workshop/main/cne-pod-reg/public/logo.png -P $HOME/public/
+wget https://raw.githubusercontent.com/fkhademi/flightschool-workshop/main/cne-pod-reg/public/new.html -P $HOME/public/
+wget https://raw.githubusercontent.com/fkhademi/flightschool-workshop/main/cne-pod-reg/public/sorttable.js -P $HOME/public/
 
 wget https://avx-build.s3.eu-central-1.amazonaws.com/avxlab.de-cert.crt -O /etc/nginx/cert.crt
 wget https://avx-build.s3.eu-central-1.amazonaws.com/avxlab.de-cert.key -O /etc/nginx/cert.key
