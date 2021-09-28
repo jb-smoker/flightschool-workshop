@@ -1,0 +1,39 @@
+<html>
+    <head>
+        <title>FlightSchool Pod Registration</title>
+    </head>
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+
+<center>
+<div class="jumbotron jumbotron-fluid">
+    <div class="container" style="width:400px;">
+        <img src="/static/logo.png" class="img-fluid">
+    </div>
+</div>
+<p class="font-weight-bold">Fill in the form to register for a pod</p>
+</center>
+<div class="container" style="width:600px;">
+    <div class="row">
+        <form class="col-lg-6 offset-lg-3 " action="doform" method="POST" id="form">
+            <div class="form-group">
+                <label for="code">Access Code</label>
+                <input type="code" class="form-control" id="code" name="code" required="required">
+            </div>
+            <div class="form-group">
+                <label for="company">Company Name</label>
+                <input type="company" class="form-control" id="company" name="company" required="required">
+            </div>
+            <div class="form-group">
+                <label for="name">Full Name</label>
+                <input type="name" class="form-control" id="name" name="name" required="required">
+            </div>
+            <div class="form-group">
+              <label for="email">Email address</label>
+              <input type="email" class="form-control" id="email" name="email" required="required">
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>          
+    </div>
+</div>
+
+</html>

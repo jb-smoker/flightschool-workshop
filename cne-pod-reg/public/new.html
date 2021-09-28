@@ -1,0 +1,29 @@
+<html>
+    <head>
+        <title>FlightSchool Pod Registration</title>
+    </head>
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+
+<center>
+<div class="jumbotron jumbotron-fluid">
+    <div class="container" style="width:500px;">
+        <img src="/static/logo.png" class="img-fluid">
+    </div>
+</div>
+</center>
+<div class="container" style="width:600px;">
+        <form action="newclass" method="POST">
+        <center>
+            <div class="form-group">
+                <label for="max_pods">Number of Pods</label>
+                <input style="width:200px;" type="code" class="form-control" id="max_pods" name="max_pods" required="required">
+            </div>
+            <div class="form-group">
+                <label for="offset">Starting Pod Number</label>
+                <input style="width:200px;" type="code" class="form-control" id="offset" name="offset" required="required">
+            </div>
+            <button type="submit" class="btn btn-primary btn-lg">New FlightSchool Access Code</button>
+        </center>
+        </form>
+</div>
+</html>
