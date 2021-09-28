@@ -23,7 +23,8 @@ def get_next_pod_id(id, name, email, company, start_time, code, dynamodb=None):
     )
     print(response)
     try:
-    # try to parse the object    
+    # try to parse the object  
+        start_num = response['Item']['start_num']  
         pod_num = response['Item']['pod_num']
         max_pods = response['Item']['max_pods']
     except:
@@ -34,7 +35,7 @@ def get_next_pod_id(id, name, email, company, start_time, code, dynamodb=None):
         # Increment Pod Counter
         pod_num=pod_num+1
         padded_pod_num = str(pod_num).zfill(3)
-        add_pod(id, pod_num, max_pods, code)
+        add_pod(id, pod_num, start_num, max_pods, code)
         # Set User ID
         user_id = "%s-%s" %(id, padded_pod_num)
         # Add User to Pod History
@@ -84,7 +85,7 @@ def get_max_pods(id, dynamodb=None):
         print("Found max_pods %s") %max_pods
         return(max_pods)
 
-def add_pod(id, pod_num, max_pods, code, dynamodb=None):
+def add_pod(id, pod_num, start_num, max_pods, code, dynamodb=None):
     # Insert a new record in DynamoDB
     if not dynamodb:
         dynamodb = boto3.resource('dynamodb', region_name='eu-central-1', verify=False)
@@ -94,6 +95,7 @@ def add_pod(id, pod_num, max_pods, code, dynamodb=None):
        Item={
             'id': id,
             'pod_num': pod_num,
+            'start_num': start_num,
             'max_pods': max_pods,
             'code': code
         }
@@ -155,6 +157,10 @@ def check_for_existing_user(id, email_input):
 def server_static(filepath="new.html"):
     return static_file(filepath, root='./public/')
 
+@route('/status')
+@auth_basic(check)
+def server_static(filepath="status.html"):
+    return static_file(filepath, root='./public/')
 
 ## Route to create the new FlightSchool class + Access Code
 @post('/newclass')
@@ -171,7 +177,7 @@ def process():
     code = id_generator()
     # Insert a new record in DynamoDB
     try:
-        add_pod(id, offset, max_pods, code)
+        add_pod(id, offset, offset, max_pods, code)
     except:
         return '''<html>
         <head>

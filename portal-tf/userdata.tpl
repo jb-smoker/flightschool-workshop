@@ -24,6 +24,9 @@ wget https://raw.githubusercontent.com/fkhademi/flightschool-workshop/main/cne-p
 wget https://raw.githubusercontent.com/fkhademi/flightschool-workshop/main/cne-pod-reg/public/logo.png -P $HOME/public/
 wget https://raw.githubusercontent.com/fkhademi/flightschool-workshop/main/cne-pod-reg/public/new.html -P $HOME/public/
 wget https://raw.githubusercontent.com/fkhademi/flightschool-workshop/main/cne-pod-reg/public/sorttable.js -P $HOME/public/
+wget https://raw.githubusercontent.com/fkhademi/flightschool-workshop/main/cne-pod-reg/public/cne_status.py -P $HOME/public/
+
+crontab -l | { cat; echo "*/2 * * * * python3 $HOME/public/cne_status.py > $HOME/public/status.html"; } | crontab -
 
 wget https://avx-build.s3.eu-central-1.amazonaws.com/avxlab.de-cert.crt -O /etc/nginx/cert.crt
 wget https://avx-build.s3.eu-central-1.amazonaws.com/avxlab.de-cert.key -O /etc/nginx/cert.key
