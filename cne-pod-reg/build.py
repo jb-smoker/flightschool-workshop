@@ -273,7 +273,7 @@ def process():
                 <div class="card-body">
                     <h5 class="card-title">Remote Access Server</h5>
                     <p class="card-text">u: admin</p>
-                    <p class="card-text">p: Password123!</p>
+                    <p class="card-text">p: Password123</p>
                     <a target="_blank" rel="noopener noreferrer" href="https://web.pod%s.%s" class="btn btn-primary">Open Server</a>
                 </div>
                 </div>

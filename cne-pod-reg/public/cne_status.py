@@ -58,6 +58,30 @@ def get_pod_end(id, dynamodb=None):
         #print("Found max_pods %s" %(max_pods)) 
         return(max_pods)
 
+def get_pod_name(id, pod_id, dynamodb=None):
+    # Get the access code for FlightSchool ID
+    if not dynamodb:
+        dynamodb = boto3.resource('dynamodb', region_name='eu-central-1', verify=False)
+    # Query table for FlightSchool ID
+    padded_pod_num = str(pod_id).zfill(3)
+    # Set User ID
+    user_id = "%s-%s" %(id, padded_pod_num)
+    table = dynamodb.Table('cne_history')
+    response = table.get_item(
+       Key={
+            'user_id': user_id
+        }
+    )
+    try:
+    # try to parse the object    
+        full_name = response['Item']['full_name']
+    except:
+        # If code not found, print an error
+        full_name=""
+        return(full_name)
+    else:
+        #print("Found starting_pod_num %s" %(start_num))
+        return(full_name)
 
 def get_cid(pod):
     ctrl_url = 'https://ctrl.pod'+str(pod)+str(".aviatrixlab.com/v1/api")
@@ -204,11 +228,12 @@ a="""<html><head>
     color: white;
   }
   </style></head>
-  <table class="sortable" id="t01"><thead><tr><th>Pod ID</th><th>2.1 AWS Transit VPC</th><th>2.2 Aviatrix Transit GW</th><th>2.3 Spoke GWs</th><th>2.4 Attach Spoke GWs</th><th>2.6 Transit Peering</th><th>2.7 S2C to On-Prem</th><th>3.1 Enable Segmentation</th><th>3.2 Create Security Domains</th><th>3.3 Connection Policies</th><th>3.4 Add VPCs to Security Domains</th><th>3.6 FQDN Filtering</th></tr></thead>"""
+  <table class="sortable" id="t01"><thead><tr><th>Pod ID</th><th>Name</th><th>2.1 AWS Transit VPC</th><th>2.2 Aviatrix Transit GW</th><th>2.3 Spoke GWs</th><th>2.4 Attach Spoke GWs</th><th>2.6 Transit Peering</th><th>2.7 S2C to On-Prem</th><th>3.1 Enable Segmentation</th><th>3.2 Create Security Domains</th><th>3.3 Connection Policies</th><th>3.4 Add VPCs to Security Domains</th><th>3.6 FQDN Filtering</th></tr></thead>"""
 
 print(a)
 #print("<table><tr><td>Pod ID</td><td>2.1</td><td>2.2</td><td>2.3</td><td>2.4</td><td>2.6</td><td>3.1</td><td>3.2</td><td>3.3</td><td>3.4</td><td>3.6</td></tr>")
 for pod in range(int(pod_start), int(pod_end)+1):
+    full_name = get_pod_name(id, pod)
     pod_cid = (get_cid(pod))
     lab2_1 = vpc_lab2(pod_cid, pod)
     lab2_2 = transit_gw_lab3(pod_cid, pod)
@@ -217,6 +242,6 @@ for pod in range(int(pod_start), int(pod_end)+1):
     lab3_4 = security_attachment(pod_cid, pod)
     lab3_6 = fqdn_filter(pod_cid, pod)
     #print("Pod"+str(pod)+" 2.1: "+str(lab2_1)+" 2.2: "+str(lab2_2[0])+" 2.3: "+str(lab2_2[1])+" 2.4: "+str(lab2_2[2])+" 2.6: "+str(lab2_2[3])+" 3.1: "+str(lab3_1[0])+" 3.2: "+str(lab3_1[1])+" 3.3: "+str(lab3_1[2])+" 3.4: "+str(lab3_4)+" 3.6: "+str(lab3_6))
-    print("<tr><td>Pod"+str(pod)+"</td><td>"+str(lab2_1)+"</td><td>"+str(lab2_2[0])+"</td><td>"+str(lab2_2[1])+"</td><td>"+str(lab2_2[2])+"</td><td>"+str(lab2_2[3])+"</td><td>"+str(lab2_7)+"</td><td>"+str(lab3_1[0])+"</td><td>"+str(lab3_1[1])+"</td><td>"+str(lab3_1[2])+"</td><td>"+str(lab3_4)+"</td><td>"+str(lab3_6)+"</td></tr>")
+    print("<tr><td>Pod"+str(pod)+"</td><td>"+str(full_name)+"</td><td>"+str(lab2_1)+"</td><td>"+str(lab2_2[0])+"</td><td>"+str(lab2_2[1])+"</td><td>"+str(lab2_2[2])+"</td><td>"+str(lab2_2[3])+"</td><td>"+str(lab2_7)+"</td><td>"+str(lab3_1[0])+"</td><td>"+str(lab3_1[1])+"</td><td>"+str(lab3_1[2])+"</td><td>"+str(lab3_4)+"</td><td>"+str(lab3_6)+"</td></tr>")
 
 print("</table></html>")
