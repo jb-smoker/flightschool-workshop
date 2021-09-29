@@ -18,7 +18,7 @@ Create a new FlightSchool session and access code:
 
 View current registrations:
 
-* Go to:  https://build.avxlab.de/list
+* Go to:  https://flightschool.avxlab.de/list
 
 ### Variables
 The following variables are required:
