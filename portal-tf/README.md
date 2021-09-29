@@ -20,6 +20,10 @@ View current registrations:
 
 * Go to:  https://flightschool.avxlab.de/list
 
+View attendee progress:
+
+* Go to:  https://flightschool.avxlab.de/status
+
 ### Variables
 The following variables are required:
 
