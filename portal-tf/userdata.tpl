@@ -26,8 +26,6 @@ wget https://raw.githubusercontent.com/fkhademi/flightschool-workshop/main/cne-p
 wget https://raw.githubusercontent.com/fkhademi/flightschool-workshop/main/cne-pod-reg/public/sorttable.js -P $HOME/public/
 wget https://raw.githubusercontent.com/fkhademi/flightschool-workshop/main/cne-pod-reg/public/cne_status.py -P $HOME/public/
 
-crontab -l | { cat; echo "*/2 * * * * python3 $HOME/public/cne_status.py > $HOME/public/status.html"; } | crontab -
-
 wget https://avx-build.s3.eu-central-1.amazonaws.com/avxlab.de-cert.crt -O /etc/nginx/cert.crt
 wget https://avx-build.s3.eu-central-1.amazonaws.com/avxlab.de-cert.key -O /etc/nginx/cert.key
 
@@ -102,3 +100,10 @@ echo "LOG=/var/log/build.log" >> /etc/init.d/build
 echo "cd $HOME; nohup python -u $HOME/build.py > /var/log/build.log &" >> /etc/init.d/build
 chmod +x /etc/init.d/build
 ln -s /etc/init.d/build /etc/rc2.d/S99build 
+
+echo "#!/bin/sh" > /root/status.sh
+echo "python3 /root/public/cne_status.py > /root/public/temp" >> /root/status.sh
+echo "cp /root/public/temp /root/public/status.html" >> /root/status.sh
+
+#crontab -l | { cat; echo "*/2 * * * * python3 $HOME/public/cne_status.py > $HOME/public/status.html"; } | crontab -
+crontab -l | { cat; echo "*/2 * * * * sh $HOME/status.sh"; } | crontab -

@@ -35,7 +35,7 @@ def get_pod_start(id, dynamodb=None):
         return '''Error trying to find FlightSchool session ID'''
     else:
         #print("Found starting_pod_num %s" %(start_num))
-        return(start_num)
+        return(start_num+1)
 
 def get_pod_end(id, dynamodb=None):
     # Get the access code for FlightSchool ID
