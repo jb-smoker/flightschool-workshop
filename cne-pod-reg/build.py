@@ -119,7 +119,7 @@ def add_user(id, user_id, name, email, company, start_time, dynamodb=None):
     )
 
 # Access Code Generator
-def id_generator(size=6, chars=string.ascii_uppercase + string.digits):
+def id_generator(size=4, chars=string.ascii_uppercase + string.digits):
     return ''.join(random.choice(chars) for _ in range(size))
 
 # Log in details
