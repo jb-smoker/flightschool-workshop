@@ -83,6 +83,31 @@ def get_pod_name(id, pod_id, dynamodb=None):
         #print("Found starting_pod_num %s" %(start_num))
         return(full_name)
 
+def get_company(id, pod_id, dynamodb=None):
+    # Get the access code for FlightSchool ID
+    if not dynamodb:
+        dynamodb = boto3.resource('dynamodb', region_name='eu-central-1', verify=False)
+    # Query table for FlightSchool ID
+    padded_pod_num = str(pod_id).zfill(3)
+    # Set User ID
+    user_id = "%s-%s" %(id, padded_pod_num)
+    table = dynamodb.Table('cne_history')
+    response = table.get_item(
+       Key={
+            'user_id': user_id
+        }
+    )
+    try:
+    # try to parse the object    
+        company = response['Item']['company']
+    except:
+        # If code not found, print an error
+        company=""
+        return(company)
+    else:
+        #print("Found starting_pod_num %s" %(start_num))
+        return(company)
+
 def get_cid(pod):
     ctrl_url = 'https://ctrl.pod'+str(pod)+str(".aviatrixlab.com/v1/api")
     payload = {"action": "login", "username": username, "password": password}
@@ -92,42 +117,47 @@ def get_cid(pod):
     return CID
 
 def vpc_lab2(cid, pod):
-    cidr = "10."#+ str(pod_id.index(pod)+1)
+    vpc_cidr = str("10.%s.40.0/23") %pod
     vpc_list = 'https://ctrl.pod'+str(pod)+str(".aviatrixlab.com/v1/api?action=list_custom_vpcs&CID=")+str(cid)+"&pool_name_only="
     vpc_response = requests.request("GET", vpc_list, headers=headers, data = payload, verify=False)
     vpcs = vpc_response.json()
     for i in vpcs['results']['all_vpc_pool_vpc_list']:
-        if (cidr in i['vpc_cidr'] and i['cloud_type'] == 1 and i['avx_transit_vpc'] == True):
-            transit_vpc = "pass"
+        if (i['cloud_type'] == 1 and i['avx_transit_vpc'] == True):
+            lab2_1 = "pass"
+            return(lab2_1)
         else:
-            transit_vpc = "-"
-    lab2_1 = "-"
-    if (transit_vpc == "pass"):
-        lab2_1 = "pass"
-        #print('pod'+str(pod)+str(': 2.1: true'))
-    #else:
-        #print('pod'+str(pod)+str(': 2.1: false'))
+            lab2_1 = "-"
     return(lab2_1)
 
 def transit_gw_lab3(cid, pod):
     avtx_tgw_list = 'https://ctrl.pod'+str(pod)+str(".aviatrixlab.com/v1/api?action=list_aviatrix_transit_gateways&CID=")+str(cid)
     avtx_tgw_response = requests.request("GET", avtx_tgw_list, headers=headers, data = payload, verify=False)
     avtx_tgw = avtx_tgw_response.json()
-    lab2_2 = "-"
-    lab2_3 = "-"
-    lab2_4 = "-"
-    lab2_6 = "-"
+    vpc_cidr = str("10.%s.40.0/23") %pod
     for i in avtx_tgw['results']:
-        if ("aws" in i['name'].lower()):
-            if ("aws" in i['name'] and 'activemesh' in i['ha_mode']):
-                lab2_2 = "pass"
-                if ("aws" in i['name'] and len(i['spoke_gw_list']) >= 2):
-                    lab2_3 = "pass"
-                    lab2_4 = "pass"
-                    if ("aws" in i['name'] and len(i['transit_peer_list']) >= 2):
-                        lab2_6 = "pass"
-    
-    return(lab2_2, lab2_3, lab2_4, lab2_6)
+        if (vpc_cidr in i['vpc_cidr']):
+            lab2_2 = "pass"
+            lab2_3 = spoke_gw_lab(cid)
+            if (len(i['spoke_gw_list']) >= 3):
+                lab2_4 = "pass"
+                if (len(i['transit_peer_list']) >= 2):
+                    lab2_6 = "pass"
+                    return(lab2_2, lab2_3, lab2_4, lab2_6)
+                else:
+                    return(lab2_2, lab2_3, lab2_4, "-")
+            else:
+                return(lab2_2, lab2_3, "-", "-")
+        #else:
+    return("-", "-", "-", "-")
+
+def spoke_gw_lab(cid):
+    spoke_gw_list = 'https://ctrl.pod'+str(pod)+str(".aviatrixlab.com/v1/api?action=list_primary_and_ha_spoke_gateways&CID=")+str(cid)
+    spoke_gw_response = requests.request("GET", spoke_gw_list, headers=headers, data = payload, verify=False)
+    spoke_gws = spoke_gw_response.json()
+    if (len(spoke_gws['results']) > 4):
+        return("pass")
+    else:
+        return("-")
 
 def s2c_tunnels(cid, pod):
     ctrl_url_show = "https://ctrl.pod"+str(pod)+".aviatrixlab.com/v1/api?action=list_site2cloud&CID="+str(cid)+"&transit_only="
@@ -229,12 +259,13 @@ a="""<html><head>
     color: white;
   }
   </style></head>
-  <table class="sortable" id="t01"><thead><tr><th>Pod ID</th><th>Name</th><th>2.1 AWS Transit VPC</th><th>2.2 Aviatrix Transit GW</th><th>2.3 Spoke GWs</th><th>2.4 Attach Spoke GWs</th><th>2.6 Transit Peering</th><th>2.7 S2C to On-Prem</th><th>3.1 Enable Segmentation</th><th>3.2 Create Security Domains</th><th>3.3 Connection Policies</th><th>3.4 Add VPCs to Security Domains</th><th>3.6 FQDN Filtering</th></tr></thead>"""
+  <table class="sortable" id="t01"><thead><tr><th>Pod ID</th><th>Name</th><th>Company</th><th>2.1 AWS Transit VPC</th><th>2.2 Aviatrix Transit GW</th><th>2.3 Spoke GWs</th><th>2.4 Attach Spoke GWs</th><th>2.6 Transit Peering</th><th>2.7 S2C to On-Prem</th><th>3.1 Enable Segmentation</th><th>3.2 Create Security Domains</th><th>3.3 Connection Policies</th><th>3.4 Add VPCs to Security Domains</th><th>3.6 FQDN Filtering</th></tr></thead>"""
 
 print(a)
 #print("<table><tr><td>Pod ID</td><td>2.1</td><td>2.2</td><td>2.3</td><td>2.4</td><td>2.6</td><td>3.1</td><td>3.2</td><td>3.3</td><td>3.4</td><td>3.6</td></tr>")
 for pod in range(int(pod_start), int(pod_end)+1):
     full_name = get_pod_name(id, pod)
+    company = get_company(id, pod)
     pod_cid = (get_cid(pod))
     lab2_1 = vpc_lab2(pod_cid, pod)
     lab2_2 = transit_gw_lab3(pod_cid, pod)
@@ -242,7 +273,6 @@ for pod in range(int(pod_start), int(pod_end)+1):
     lab3_1 = security_domains(pod_cid, pod)
     lab3_4 = security_attachment(pod_cid, pod)
     lab3_6 = fqdn_filter(pod_cid, pod)
-    #print("Pod"+str(pod)+" 2.1: "+str(lab2_1)+" 2.2: "+str(lab2_2[0])+" 2.3: "+str(lab2_2[1])+" 2.4: "+str(lab2_2[2])+" 2.6: "+str(lab2_2[3])+" 3.1: "+str(lab3_1[0])+" 3.2: "+str(lab3_1[1])+" 3.3: "+str(lab3_1[2])+" 3.4: "+str(lab3_4)+" 3.6: "+str(lab3_6))
-    print("<tr><td>Pod"+str(pod)+"</td><td>"+str(full_name)+"</td><td>"+str(lab2_1)+"</td><td>"+str(lab2_2[0])+"</td><td>"+str(lab2_2[1])+"</td><td>"+str(lab2_2[2])+"</td><td>"+str(lab2_2[3])+"</td><td>"+str(lab2_7)+"</td><td>"+str(lab3_1[0])+"</td><td>"+str(lab3_1[1])+"</td><td>"+str(lab3_1[2])+"</td><td>"+str(lab3_4)+"</td><td>"+str(lab3_6)+"</td></tr>")
+    print("<tr><td>Pod"+str(pod)+"</td><td>"+str(full_name)+"</td><td>"+str(company)+"</td><td>"+str(lab2_1)+"</td><td>"+str(lab2_2[0])+"</td><td>"+str(lab2_2[1])+"</td><td>"+str(lab2_2[2])+"</td><td>"+str(lab2_2[3])+"</td><td>"+str(lab2_7)+"</td><td>"+str(lab3_1[0])+"</td><td>"+str(lab3_1[1])+"</td><td>"+str(lab3_1[2])+"</td><td>"+str(lab3_4)+"</td><td>"+str(lab3_6)+"</td></tr>")
 
 print("</table></html>")
