@@ -138,16 +138,15 @@ def transit_gw_lab3(cid, pod):
         if (vpc_cidr in i['vpc_cidr']):
             lab2_2 = "pass"
             lab2_3 = spoke_gw_lab(cid)
-            if (len(i['spoke_gw_list']) >= 3):
+            if (len(i['spoke_gw_list']) >= 2):
                 lab2_4 = "pass"
-                if (len(i['transit_peer_list']) >= 2):
-                    lab2_6 = "pass"
-                    return(lab2_2, lab2_3, lab2_4, lab2_6)
-                else:
-                    return(lab2_2, lab2_3, lab2_4, "-")
             else:
-                return(lab2_2, lab2_3, "-", "-")
-        #else:
+                lab2_4 = "-"
+            if (len(i['transit_peer_list']) >= 2):
+                lab2_6 = "pass"
+            else:
+                lab2_6 = "-"
+            return(lab2_2, lab2_3, lab2_4, lab2_6)
     return("-", "-", "-", "-")
 
 def spoke_gw_lab(cid):
