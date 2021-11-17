@@ -19,7 +19,7 @@ payload = {}
 def get_pod_start(id, dynamodb=None):
     # Get the access code for FlightSchool ID
     if not dynamodb:
-        dynamodb = boto3.resource('dynamodb', region_name='eu-central-1', verify=False)
+        dynamodb = boto3.resource('dynamodb', region_name='eu-central-1', verify=True)
     # Query table for FlightSchool ID
     table = dynamodb.Table('cne_counter')
     response = table.get_item(
@@ -40,7 +40,7 @@ def get_pod_start(id, dynamodb=None):
 def get_pod_end(id, dynamodb=None):
     # Get the access code for FlightSchool ID
     if not dynamodb:
-        dynamodb = boto3.resource('dynamodb', region_name='eu-central-1', verify=False)
+        dynamodb = boto3.resource('dynamodb', region_name='eu-central-1', verify=True)
     # Query table for FlightSchool ID
     table = dynamodb.Table('cne_counter')
     response = table.get_item(
@@ -61,7 +61,7 @@ def get_pod_end(id, dynamodb=None):
 def get_pod_name(id, pod_id, dynamodb=None):
     # Get the access code for FlightSchool ID
     if not dynamodb:
-        dynamodb = boto3.resource('dynamodb', region_name='eu-central-1', verify=False)
+        dynamodb = boto3.resource('dynamodb', region_name='eu-central-1', verify=True)
     # Query table for FlightSchool ID
     padded_pod_num = str(pod_id).zfill(3)
     # Set User ID
@@ -86,7 +86,7 @@ def get_pod_name(id, pod_id, dynamodb=None):
 def get_company(id, pod_id, dynamodb=None):
     # Get the access code for FlightSchool ID
     if not dynamodb:
-        dynamodb = boto3.resource('dynamodb', region_name='eu-central-1', verify=False)
+        dynamodb = boto3.resource('dynamodb', region_name='eu-central-1', verify=True)
     # Query table for FlightSchool ID
     padded_pod_num = str(pod_id).zfill(3)
     # Set User ID
