@@ -121,12 +121,10 @@ def vpc_lab2(cid, pod):
     vpc_list = 'https://ctrl.pod'+str(pod)+str(".aviatrixlab.com/v1/api?action=list_custom_vpcs&CID=")+str(cid)+"&pool_name_only="
     vpc_response = requests.request("GET", vpc_list, headers=headers, data = payload, verify=False)
     vpcs = vpc_response.json()
+    lab2_1 = "-"
     for i in vpcs['results']['all_vpc_pool_vpc_list']:
-        if (i['cloud_type'] == 1 and i['avx_transit_vpc'] == True):
+        if i['vpc_cidr'] == vpc_cidr:
             lab2_1 = "pass"
-            return(lab2_1)
-        else:
-            lab2_1 = "-"
     return(lab2_1)
 
 def transit_gw_lab3(cid, pod):
@@ -258,7 +256,7 @@ a="""<html><head>
     color: white;
   }
   </style></head>
-  <table class="sortable" id="t01"><thead><tr><th>Pod ID</th><th>Name</th><th>Company</th><th>2.1 AWS Transit VPC</th><th>2.2 Aviatrix Transit GW</th><th>2.3 Spoke GWs</th><th>2.4 Attach Spoke GWs</th><th>2.6 Transit Peering</th><th>2.7 S2C to On-Prem</th><th>3.1 Enable Segmentation</th><th>3.2 Create Security Domains</th><th>3.3 Connection Policies</th><th>3.4 Add VPCs to Security Domains</th><th>3.6 FQDN Filtering</th></tr></thead>"""
+  <table class="sortable" id="t01"><thead><tr><th>Pod ID</th><th>Name</th><th>Company</th><th>2.1 New Transit VPC</th><th>2.2 Aviatrix Transit GW</th><th>2.3 Spoke GWs</th><th>2.4 Attach Spoke GWs</th><th>2.6 Transit Peering</th><th>2.7 S2C to On-Prem</th><th>3.1 Enable Segmentation</th><th>3.2 Create Security Domains</th><th>3.3 Connection Policies</th><th>3.4 Add VPCs to Security Domains</th><th>3.6 FQDN Filtering</th></tr></thead>"""
 
 print(a)
 #print("<table><tr><td>Pod ID</td><td>2.1</td><td>2.2</td><td>2.3</td><td>2.4</td><td>2.6</td><td>3.1</td><td>3.2</td><td>3.3</td><td>3.4</td><td>3.6</td></tr>")
